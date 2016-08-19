@@ -1,6 +1,9 @@
 name: hscaffold
 version: '0.1.0.0'
-synopsis: Scaffolding DSL for Haskell
+synopsis: Very simple file/directory structure scaffolding writer monad EDSL
+description: '
+	See our README on GitHub at <https://github.com/yamadapc/hscaffold>
+'
 category: Development
 author: Pedro Tacla Yamada
 maintainer: tacla.yamada@gmail.com
@@ -8,6 +11,7 @@ license: MIT
 github: yamadapc/hscaffold
 
 extra-source-files:
+- README.md
 - ChangeLog.md
 
 dependencies:

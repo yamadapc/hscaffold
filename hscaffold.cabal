@@ -2,21 +2,23 @@
 --
 -- see: https://github.com/sol/hpack
 
-name:                hscaffold
-version:             0.1.0.0
-synopsis:            Scaffolding DSL for Haskell
-homepage:            https://github.com/yamadapc/hscaffold#readme
-bug-reports:         https://github.com/yamadapc/hscaffold/issues
-license:             MIT
-license-file:        LICENSE
-author:              Pedro Tacla Yamada
-maintainer:          tacla.yamada@gmail.com
-category:            Development
-build-type:          Simple
-cabal-version:       >= 1.10
+name:           hscaffold
+version:        0.1.0.0
+synopsis:       Very simple file/directory structure scaffolding writer monad EDSL
+description:     See our README on GitHub at <https://github.com/yamadapc/hscaffold> 
+homepage:       https://github.com/yamadapc/hscaffold#readme
+bug-reports:    https://github.com/yamadapc/hscaffold/issues
+license:        MIT
+license-file:   LICENSE
+author:         Pedro Tacla Yamada
+maintainer:     tacla.yamada@gmail.com
+category:       Development
+build-type:     Simple
+cabal-version:  >= 1.10
 
 extra-source-files:
     ChangeLog.md
+    README.md
 
 source-repository head
   type: git

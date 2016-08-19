@@ -49,8 +49,8 @@ import           System.FilePath
 --                                       , "here"
 --                                       ])
 --     directory "./src" $ do
---         file "./Main.hs" "main = putStrLn \"Hello World\""
---         file "./Other.hs" "other = putStrLn \"Hello You\""
+--         file "./Main.hs" "main = putStrLn \\"Hello World\\""
+--         file "./Other.hs" "other = putStrLn \\"Hello You\\""
 -- @
 runHscaffold :: FilePath -> WriterT ScaffoldActionV IO a -> IO a
 runHscaffold root w = do
