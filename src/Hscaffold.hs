@@ -2,9 +2,10 @@
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Hscaffold
-    ( runWriter
-    , runHscaffold
+    ( runHscaffold
     , runAction
+    , runWriter
+    , runWriterT
 
     , directory
     , file
@@ -29,6 +30,14 @@ import           System.Directory
 import           System.Posix.Files
 import           System.FilePath
 
+-- | Accumulator for actions
+type ScaffoldAction e = [ScaffoldActionType e]
+
+-- | Accumulator for actions set with void extension
+type ScaffoldActionV = ScaffoldAction ()
+
+-- | Type of actions scaffolding can make, 'ScaffoldActionTypeExtension' is open
+-- for extension through other data-types
 data ScaffoldActionType e = File FilePath Text
                           | Link FilePath FilePath
                           | Directory FilePath (ScaffoldAction e)
@@ -36,9 +45,7 @@ data ScaffoldActionType e = File FilePath Text
                           | ScaffoldActionTypeExtension e
   deriving(Show, Eq, Ord)
 
-type ScaffoldAction e = [ScaffoldActionType e]
-type ScaffoldActionV = ScaffoldAction ()
-
+-- | Create a directory with the nested contents
 directory
     :: MonadWriter (ScaffoldAction e) m
     => FilePath
@@ -49,6 +56,7 @@ directory fp nested = do
     tell [Directory fp nested']
     return x
 
+-- | Create a directory with the nested contents and permissions
 directoryWith
     :: MonadWriter (ScaffoldAction e) m
     => Permissions
@@ -60,6 +68,7 @@ directoryWith perms fp nested = do
     tell [SetPermissions perms fp]
     return x
 
+-- | Create a file with the given contents
 file
     :: MonadWriter (ScaffoldAction e) m
     => FilePath
@@ -67,6 +76,7 @@ file
     -> m ()
 file fp txt = tell [File fp txt]
 
+-- | Create a file with the given contents and permissions
 fileWith
     :: MonadWriter (ScaffoldAction e) m
     => Permissions
@@ -77,6 +87,7 @@ fileWith perms fp txt = do
     file fp txt
     tell [SetPermissions perms fp]
 
+-- | Set permissions on a filepath
 permissions
     :: MonadWriter (ScaffoldAction e) m
     => FilePath
@@ -84,6 +95,7 @@ permissions
     -> m ()
 permissions fp perms = tell [SetPermissions perms fp]
 
+-- | Create a symbolic link between two filepaths
 link
     :: MonadWriter (ScaffoldAction e) m
     => FilePath
@@ -91,12 +103,14 @@ link
     -> m ()
 link fp1 fp2 = tell [Link fp1 fp2]
 
+-- | Run the scaffolding writer on the IO monad with no extensions
 runHscaffold :: FilePath -> WriterT ScaffoldActionV IO a -> IO a
 runHscaffold root w = do
     (o, ws) <- runWriterT w
     mapM_ (runAction root) ws
     return o
 
+-- | Run a single scaffolding action on the IO monad with no extensions
 runAction :: FilePath -> ScaffoldActionType () -> IO ()
 runAction root (SetPermissions perms fp) =
     setPermissions fp perms
