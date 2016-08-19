@@ -17,11 +17,12 @@ spec = do
                           directory "./something" $ do
                               file "stuff-here.hs" ""
                               file "stuff-there.hs" ""
-            ws `shouldBe` [ File "stuff-bang.hs" ""
-                          , Directory "./something" [ File "stuff-here.hs" ""
-                                                    , File "stuff-there.hs" ""
-                                                    ]
-                          ]
+            (ws :: ScaffoldAction ())
+                `shouldBe` [ File "stuff-bang.hs" ""
+                           , Directory "./something" [ File "stuff-here.hs" ""
+                                                     , File "stuff-there.hs" ""
+                                                     ]
+                           ]
 
     describe "the runner" $ do
         describe "runAction" $ do
