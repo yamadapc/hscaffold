@@ -1,5 +1,5 @@
 name: hscaffold
-version: '0.1.1.0'
+version: '0.2.0.0'
 synopsis: Very simple file/directory structure scaffolding writer monad EDSL
 description: '
 	See our README on GitHub at <https://github.com/yamadapc/hscaffold>
