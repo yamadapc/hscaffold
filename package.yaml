@@ -1,0 +1,30 @@
+name: hscaffold
+version: '0.1.0.0'
+synopsis: Scaffolding DSL for Haskell
+category: Development
+author: Pedro Tacla Yamada
+maintainer: tacla.yamada@gmail.com
+license: MIT
+homepage: https://github.com/yamadapc/hscaffold
+
+extra-source-files:
+- ChangeLog.md
+
+dependencies:
+- base >=4.8 && <4.9
+- text
+- mtl
+- directory
+- filepath
+
+library:
+  source-dirs: src
+
+tests:
+  hspec:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+    - hspec
+    - hscaffold
+    - QuickCheck
