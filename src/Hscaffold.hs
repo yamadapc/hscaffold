@@ -30,6 +30,34 @@ import           System.Directory
 import           System.Posix.Files
 import           System.FilePath
 
+
+-- | Run the scaffolding writer on the IO monad with no extensions
+--
+--     runHscaffold "." $ do
+--         file "./.gitignore" (Text.unlines [ ".stack-work"
+--                                           , "stuff"
+--                                           , "here"
+--                                           ])
+--         directory "./src" $ do
+--             file "./Main.hs" "main = putStrLn \"Hello World\""
+runHscaffold :: FilePath -> WriterT ScaffoldActionV IO a -> IO a
+runHscaffold root w = do
+    (o, ws) <- runWriterT w
+    mapM_ (runAction root) ws
+    return o
+
+-- | Run a single scaffolding action on the IO monad with no extensions
+runAction :: FilePath -> ScaffoldActionType () -> IO ()
+runAction root (SetPermissions perms fp) =
+    setPermissions fp perms
+runAction root (Link fp1 fp2) =
+    createSymbolicLink fp1 fp2
+runAction root (File fp txt) =
+    Text.writeFile (root </> fp) txt
+runAction root (Directory fp nested) = do
+    createDirectoryIfMissing True (root </> fp)
+    mapM_ (runAction (root </> fp)) nested
+
 -- | Accumulator for actions
 type ScaffoldAction e = [ScaffoldActionType e]
 
@@ -102,22 +130,3 @@ link
     -> FilePath
     -> m ()
 link fp1 fp2 = tell [Link fp1 fp2]
-
--- | Run the scaffolding writer on the IO monad with no extensions
-runHscaffold :: FilePath -> WriterT ScaffoldActionV IO a -> IO a
-runHscaffold root w = do
-    (o, ws) <- runWriterT w
-    mapM_ (runAction root) ws
-    return o
-
--- | Run a single scaffolding action on the IO monad with no extensions
-runAction :: FilePath -> ScaffoldActionType () -> IO ()
-runAction root (SetPermissions perms fp) =
-    setPermissions fp perms
-runAction root (Link fp1 fp2) =
-    createSymbolicLink fp1 fp2
-runAction root (File fp txt) =
-    Text.writeFile (root </> fp) txt
-runAction root (Directory fp nested) = do
-    createDirectoryIfMissing True (root </> fp)
-    mapM_ (runAction (root </> fp)) nested
