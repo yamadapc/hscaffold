@@ -5,7 +5,8 @@
 name:                hscaffold
 version:             0.1.0.0
 synopsis:            Scaffolding DSL for Haskell
-homepage:            https://github.com/yamadapc/hscaffold
+homepage:            https://github.com/yamadapc/hscaffold#readme
+bug-reports:         https://github.com/yamadapc/hscaffold/issues
 license:             MIT
 license-file:        LICENSE
 author:              Pedro Tacla Yamada
@@ -16,6 +17,10 @@ cabal-version:       >= 1.10
 
 extra-source-files:
     ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/yamadapc/hscaffold
 
 library
   build-depends:

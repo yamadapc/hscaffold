@@ -5,7 +5,7 @@ category: Development
 author: Pedro Tacla Yamada
 maintainer: tacla.yamada@gmail.com
 license: MIT
-homepage: https://github.com/yamadapc/hscaffold
+github: yamadapc/hscaffold
 
 extra-source-files:
 - ChangeLog.md
