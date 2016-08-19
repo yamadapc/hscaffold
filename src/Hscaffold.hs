@@ -1,3 +1,6 @@
+-- module: Hscaffold
+-- author: Pedro Tacla Yamada
+-- synopsis: Very simple file/directory structure scaffolding writer monad EDSL
 {-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -18,12 +21,18 @@ module Hscaffold
     , ScaffoldActionType(..)
     , ScaffoldAction
     , ScaffoldActionV
+
+    , module Data.Text
+    , module Control.Monad.Writer
+    , module System.Directory
+    , module System.FilePath
     )
   where
 
 import           Control.Applicative
 import           Control.Monad.Writer
 import           Data.Text                (Text)
+import qualified Data.Text
 import qualified Data.Text.IO as Text
 import           System.Directory
 -- TODO - Disable this on Windows
@@ -33,13 +42,16 @@ import           System.FilePath
 
 -- | Run the scaffolding writer on the IO monad with no extensions
 --
---     runHscaffold "." $ do
---         file "./.gitignore" (Text.unlines [ ".stack-work"
---                                           , "stuff"
---                                           , "here"
---                                           ])
---         directory "./src" $ do
---             file "./Main.hs" "main = putStrLn \"Hello World\""
+-- @
+-- runHscaffold "." $ do
+--     file "./.gitignore" (Text.unlines [ ".stack-work"
+--                                       , "stuff"
+--                                       , "here"
+--                                       ])
+--     directory "./src" $ do
+--         file "./Main.hs" "main = putStrLn \"Hello World\""
+--         file "./Other.hs" "other = putStrLn \"Hello You\""
+-- @
 runHscaffold :: FilePath -> WriterT ScaffoldActionV IO a -> IO a
 runHscaffold root w = do
     (o, ws) <- runWriterT w
