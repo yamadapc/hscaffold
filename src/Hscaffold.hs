@@ -23,6 +23,7 @@ module Hscaffold
     , ScaffoldActionV
 
     , module Data.Text
+    , module Control.Monad.IO.Class
     , module Control.Monad.Writer
     , module System.Directory
     , module System.FilePath
@@ -30,6 +31,7 @@ module Hscaffold
   where
 
 import           Control.Applicative
+import           Control.Monad.IO.Class
 import           Control.Monad.Writer
 import           Data.Text                (Text)
 import qualified Data.Text

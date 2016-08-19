@@ -29,6 +29,7 @@ library
       base >=4.8 && <4.9
     , text
     , mtl
+    , transformers
     , directory
     , filepath
     , unix
@@ -49,6 +50,7 @@ test-suite hspec
       base >=4.8 && <4.9
     , text
     , mtl
+    , transformers
     , directory
     , filepath
     , unix

@@ -18,6 +18,7 @@ dependencies:
 - base >=4.8 && <4.9
 - text
 - mtl
+- transformers
 - directory
 - filepath
 - unix
