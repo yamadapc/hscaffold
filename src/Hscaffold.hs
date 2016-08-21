@@ -5,25 +5,36 @@
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE OverloadedStrings          #-}
 module Hscaffold
-    ( runHscaffold
+    (
+    -- * Running Hscaffold
+      runHscaffold
     , runAction
     , runWriter
     , runWriterT
 
+    -- * EDSL Combinators
     , directory
     , file
     , link
     , copy
+    , touch
+
+    -- ** Setting permissions
+    , permissions
     , fileWith
     , directoryWith
-    , permissions
+    , copyWith
+    , touchWith
     , Permissions(..)
 
+    -- * Types
     , ScaffoldActionType(..)
     , ScaffoldAction
     , ScaffoldActionV
 
+    -- * Re-exports
     , module Data.Text
     , module Control.Monad.IO.Class
     , module Control.Monad.Writer
@@ -155,12 +166,39 @@ link
     -> m ()
 link fp1 fp2 = tell [Link fp1 fp2]
 
+-- | Write the empty string to a file
+touch
+    :: MonadWriter (ScaffoldAction e) m
+    => FilePath
+    -> m ()
+touch fp = file fp ""
+
+-- | Write the empty string to a file with given permissions
+touchWith
+    :: MonadWriter (ScaffoldAction e) m
+    => Permissions
+    -> FilePath
+    -> m ()
+touchWith perms fp = fileWith perms fp ""
+
 -- | Copy a file from A to B
 --
--- *Non-absolute paths are treated relative to the root*
+-- Non-absolute paths are treated relative to the *current* root, nested blocks
+-- change the root
 copy
     :: MonadWriter (ScaffoldAction e) m
     => FilePath
     -> FilePath
     -> m ()
 copy fp1 fp2 = tell [Copy fp1 fp2]
+
+-- | Copy a file from A to B and set permissions on B, see 'copy'
+copyWith
+    :: MonadWriter (ScaffoldAction e) m
+    => Permissions
+    -> FilePath
+    -> FilePath
+    -> m ()
+copyWith perms fp1 fp2 = do
+    copy fp1 fp2
+    permissions fp2 perms
