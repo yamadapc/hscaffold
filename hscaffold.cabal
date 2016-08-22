@@ -3,7 +3,7 @@
 -- see: https://github.com/sol/hpack
 
 name:           hscaffold
-version:        0.4.2.0
+version:        0.4.3.0
 synopsis:       Very simple file/directory structure scaffolding writer monad EDSL
 description:     See our README on GitHub at <https://github.com/yamadapc/hscaffold> 
 homepage:       https://github.com/yamadapc/hscaffold#readme
