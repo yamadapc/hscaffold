@@ -36,8 +36,14 @@ library
     , regex-compat
   exposed-modules:
       Hscaffold
-  other-modules:
-      Paths_hscaffold
+      Hscaffold.EDSL
+      Hscaffold.Generator.Directory
+      Hscaffold.Generator.Hsfiles
+      Hscaffold.Interpreter.Common
+      Hscaffold.Interpreter.Haskell
+      Hscaffold.Interpreter.Hsfiles
+      Hscaffold.Interpreter.IO
+      Hscaffold.Types
   hs-source-dirs:
       src
   default-language: Haskell2010

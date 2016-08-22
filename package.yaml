@@ -25,7 +25,6 @@ dependencies:
 - regex-compat
 
 library:
-  exposed-modules: Hscaffold
   source-dirs: src
 
 executables:

@@ -82,9 +82,9 @@ spec = do
                          , "even more stuff here"
                          ]))
             in (fromHsfiles h :: ScaffoldActionV) `shouldBe`
-               [ File "./stuff-bang.hs" "stuff here"
-               , File "./other/stuff-bang.hs" "stuff here"
-               , File "./other/other-stuff-bang.hs" "even more stuff here"
+               [ File "stuff-bang.hs" "stuff here"
+               , File "other/stuff-bang.hs" "stuff here"
+               , File "other/other-stuff-bang.hs" "even more stuff here"
                ]
 
         it "works without surprises" $
@@ -102,9 +102,9 @@ spec = do
                          , "  here too"
                          ]))
             in (fromHsfiles h :: ScaffoldActionV) `shouldBe`
-               [ File "./stuff-bang.hs" "stuff here\nmultiline\n ya"
-               , File "./other/stuff-bang.hs" "stuff here"
-               , File "./other/other-stuff-bang.hs" "even more stuff here\n  here too"
+               [ File "stuff-bang.hs" "stuff here\nmultiline\n ya"
+               , File "other/stuff-bang.hs" "stuff here"
+               , File "other/other-stuff-bang.hs" "even more stuff here\n  here too"
                ]
 
     describe "hscaffoldToHaskell" $ do
@@ -126,6 +126,13 @@ spec = do
             h <- hscaffoldFromDirectory "./src" :: IO (ScaffoldActionV)
             let ms = mapMaybe (\x -> case x of File fp _ -> Just fp; _ -> Nothing) h
             ms `shouldContain` ["Hscaffold.hs"]
+
+        it "ignores git" $ do
+            h <- hscaffoldFromDirectory "." :: IO (ScaffoldActionV)
+            let ms = mapMaybe (\x -> case x of File fp _ -> Just fp; _ -> Nothing) h
+            ms `shouldNotContain` [".git/index"]
+            ms `shouldContain` ["README.md"]
+            ms `shouldContain` ["test/Spec.hs"]
 
     describe "the runner" $
         describe "runAction" $ do
