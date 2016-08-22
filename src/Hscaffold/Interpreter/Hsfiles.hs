@@ -7,9 +7,8 @@ import           Data.Text                    (Text)
 import qualified Data.Text                    as Text
 import qualified Data.Text.IO                 as Text
 
-import           Hscaffold.Types
-
 import           Hscaffold.Interpreter.Common
+import           Hscaffold.Types
 
 -- | Run the scaffolding writer and return an @.hsfiles@ 'Text' to use with
 -- @stack-templates@

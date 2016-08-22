@@ -6,7 +6,6 @@ module Hscaffold.Generator.Hsfiles
 import           Control.Arrow
 import           Control.Monad.Writer
 import qualified Data.Text                     as Text
--- TODO - Disable this on Windows
 import           System.FilePath
 import           Text.Regex
 

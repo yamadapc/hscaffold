@@ -7,8 +7,8 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Writer
 import qualified Data.Text.IO                 as Text
 import           System.Directory
--- TODO - Disable this on Windows
 import           System.IO.Temp
+-- TODO - Disable this on Windows
 import           System.Posix.Files
 
 import           Hscaffold.Interpreter.Common
