@@ -53,9 +53,24 @@ runAction root (Copy fp1 fp2) = do
         fp2' = mkActionPath root fp2
     copyFile fp1' fp2'
 
+-- | Creates a temporary directory with the scaffold and runs an action that
+-- takes it as its argument.
+--
+-- Uses 'withSystemTempDirectory' under the hood.
+--
+-- @
+-- withTemporaryHscaffold
+--     (do
+--         file "something" "something"
+--         directory "something" $ file "something-else" "something"
+--     )
+--     (\tmp -> do
+--         undefined
+--     )
+-- @
 withTemporaryHscaffold :: (MonadMask m, MonadIO m)
                        => ScaffoldMonadT m a
-                       -> m b
+                       -> (FilePath -> m b)
                        -> m b
 withTemporaryHscaffold =
     withTemporaryHscaffold' "hscaffold"
@@ -63,18 +78,18 @@ withTemporaryHscaffold =
 withTemporaryHscaffold' :: (MonadMask m, MonadIO m)
                         => String
                         -> ScaffoldMonadT m a
-                        -> m b
+                        -> (FilePath -> m b)
                         -> m b
 withTemporaryHscaffold' name scaffold action =
     withSystemTempDirectory name $
         \tmp -> do
-            runHscaffold tmp scaffold
-            action
+            _ <- runHscaffold tmp scaffold
+            action tmp
 
-withTemporaryHscaffoldIO :: ScaffoldMonadIO a -> IO b -> IO b
+withTemporaryHscaffoldIO :: ScaffoldMonadIO a -> (FilePath -> IO b) -> IO b
 withTemporaryHscaffoldIO =
     withTemporaryHscaffold
 
-withTemporaryHscaffoldIO' :: String -> ScaffoldMonadIO a -> IO b -> IO b
+withTemporaryHscaffoldIO' :: String -> ScaffoldMonadIO a -> (FilePath -> IO b) -> IO b
 withTemporaryHscaffoldIO' =
     withTemporaryHscaffold'
