@@ -28,6 +28,13 @@ library:
   exposed-modules: Hscaffold
   source-dirs: src
 
+executables:
+  hsfiles-from-directory:
+    main: HsfilesFromDirectory.hs
+    source-dirs: bin
+    dependencies:
+    - hscaffold
+
 tests:
   hspec:
     main: Spec.hs

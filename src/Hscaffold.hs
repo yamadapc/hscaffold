@@ -67,6 +67,7 @@ import           Control.Applicative
 import           Control.Arrow
 import           Control.Monad.IO.Class
 import           Control.Monad.Writer
+import           Data.List
 import           Data.Text              (Text)
 import qualified Data.Text              as Text
 import qualified Data.Text.IO           as Text
@@ -128,22 +129,27 @@ fromHsfilesW h = tell (fromHsfiles h)
 
 -- | Converts a directory to scaffold actions
 hscaffoldFromDirectory :: FilePath -> IO (ScaffoldAction e)
-hscaffoldFromDirectory root = do
-    ls <- (filter (/= "..") . filter (/= ".")) <$> getDirectoryContents root
+hscaffoldFromDirectory =
+    hscaffoldFromDirectoryWith (filter (not . ("." `isPrefixOf`)))
+
+-- | Converts a directory to scaffold actions with a custom filter function. By
+-- default we ignore directories starting with @.@
+hscaffoldFromDirectoryWith
+    :: ([FilePath] -> [FilePath]) -> FilePath -> IO (ScaffoldAction e)
+hscaffoldFromDirectoryWith p root = do
+    ls <- p <$> getDirectoryContents root
     concat <$> mapM classify ls
   where
+    fromFile fp = do
+        txt <- Text.readFile fp
+        return [ File fp txt ]
     classify fp = do
         let fp' = root </> fp
         isfl <- doesFileExist fp'
+        isdir <- doesDirectoryExist fp'
         if isfl
-            then do
-                txt <- Text.readFile fp'
-                return [File fp txt]
-            else do
-                isdir <- doesDirectoryExist fp'
-                if isdir
-                   then hscaffoldFromDirectory fp'
-                   else return []
+            then fromFile fp'
+            else if isdir then hscaffoldFromDirectoryWith p fp' else return []
 
 hscaffoldToHaskell :: Foldable t => t (ScaffoldActionType e) -> Text
 hscaffoldToHaskell hs = Text.stripEnd $
