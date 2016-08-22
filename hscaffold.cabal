@@ -33,6 +33,7 @@ library
     , directory
     , filepath
     , unix
+    , regex-compat
   exposed-modules:
       Hscaffold
   other-modules:
@@ -54,9 +55,11 @@ test-suite hspec
     , directory
     , filepath
     , unix
+    , regex-compat
     , hspec
     , hscaffold
     , QuickCheck
+    , temporary
   other-modules:
       HscaffoldSpec
       SanitySpec
