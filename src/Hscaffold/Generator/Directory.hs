@@ -17,25 +17,20 @@ hscaffoldFromDirectory =
 hscaffoldFromDirectoryWith :: ([FilePath] -> [FilePath])
                            -> FilePath
                            -> IO (ScaffoldAction e)
-hscaffoldFromDirectoryWith p root = hscaffoldFromDirectoryWith' root p root
-
-hscaffoldFromDirectoryWith' :: Traversable t
-                            => FilePath
-                            -> ([FilePath] -> t FilePath)
-                            -> FilePath
-                            -> IO [ScaffoldActionType e]
-hscaffoldFromDirectoryWith' start p root = do
+hscaffoldFromDirectoryWith p root = do
     ls <- p <$> getDirectoryContents root
     concat <$> mapM classify ls
   where
-    fromFile fp' = do
+    fromFile fp fp' = do
         txt <- Text.readFile fp'
-        return [ File (makeRelative start fp') txt ]
-    fromDir = hscaffoldFromDirectoryWith' start p
+        return [ File fp txt ]
+    fromDir fp fp' = do
+        children <- hscaffoldFromDirectoryWith p fp'
+        return [ Directory fp children ]
     classify fp = do
         let fp' = root </> fp
         isfl <- doesFileExist fp'
         isdir <- doesDirectoryExist fp'
         if isfl
-            then fromFile fp'
-            else if isdir then fromDir fp' else return []
+            then fromFile fp fp'
+            else if isdir then fromDir fp fp' else return []

@@ -18,6 +18,7 @@ module Hscaffold
     , readHsfiles
       -- * Convert a directory to Hscaffold
     , hscaffoldFromDirectory
+    , hscaffoldFromDirectoryWith
       -- * Compile Hscaffold to Haskell code
     , hscaffoldToHaskell
       -- ** Finer grained runners

@@ -4,6 +4,7 @@ module HscaffoldSpec where
 
 import           Control.Exception
 import           Control.Monad
+import           Data.List
 import           Data.Maybe
 import qualified Data.Text         as Text
 import           Hscaffold
@@ -135,12 +136,26 @@ spec = do
         it "ignores git" $ do
             h <- hscaffoldFromDirectory "." :: IO (ScaffoldActionV)
             let ms = mapMaybe (\x -> case x of
-                                   File fp _ -> Just fp
+                                   File fp _ -> Just ("file", fp)
+                                   Directory fp _ -> Just ("directory", fp)
                                    _ -> Nothing)
                               h
-            ms `shouldNotContain` [ ".git/index" ]
-            ms `shouldContain` [ "README.md" ]
-            ms `shouldContain` [ "test/Spec.hs" ]
+            ms `shouldNotContain` [ ("directory", ".git") ]
+            ms `shouldContain` [ ("file", "README.md") ]
+            ms `shouldContain` [ ("directory", "test") ]
+
+            let (Just (Directory _ fs)) = find (\d -> case d of
+                                           Directory "src" _ -> True
+                                           _ -> False
+                                           ) h
+            map (\x -> case x of Directory f _ -> f ; File f _ -> f) fs
+                `shouldBe` ["Hscaffold", "Hscaffold.hs"]
+            let (Just (Directory _ fs')) = find (\d -> case d of
+                                           Directory "Hscaffold" _ -> True
+                                           _ -> False
+                                           ) fs
+            map (\x -> case x of Directory f _ -> f ; File f _ -> f) fs'
+                `shouldBe` ["EDSL.hs", "Generator", "Interpreter", "Types.hs"]
 
     describe "the runner" $
         describe "runAction" $ do
