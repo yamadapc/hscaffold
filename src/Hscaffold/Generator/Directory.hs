@@ -1,5 +1,4 @@
-module Hscaffold.Generator.Directory
-  where
+module Hscaffold.Generator.Directory where
 
 import           Data.List
 import qualified Data.Text.IO     as Text
@@ -15,16 +14,17 @@ hscaffoldFromDirectory =
 
 -- | Converts a directory to scaffold actions with a custom filter function. By
 -- default we ignore directories starting with @.@
-hscaffoldFromDirectoryWith
-    :: ([FilePath] -> [FilePath]) -> FilePath -> IO (ScaffoldAction e)
-hscaffoldFromDirectoryWith = hscaffoldFromDirectoryWith' False
+hscaffoldFromDirectoryWith :: ([FilePath] -> [FilePath])
+                           -> FilePath
+                           -> IO (ScaffoldAction e)
+hscaffoldFromDirectoryWith =
+    hscaffoldFromDirectoryWith' False
 
-hscaffoldFromDirectoryWith'
-  :: Traversable t =>
-     Bool
-     -> ([FilePath] -> t FilePath)
-     -> FilePath
-     -> IO [ScaffoldActionType e]
+hscaffoldFromDirectoryWith' :: Traversable t
+                            => Bool
+                            -> ([FilePath] -> t FilePath)
+                            -> FilePath
+                            -> IO [ScaffoldActionType e]
 hscaffoldFromDirectoryWith' isRecur p root = do
     ls <- p <$> getDirectoryContents root
     concat <$> mapM classify ls
@@ -32,14 +32,11 @@ hscaffoldFromDirectoryWith' isRecur p root = do
     fromFile fp' fp = do
         txt <- Text.readFile fp'
         return [ File (normalise fp) txt ]
-    fromDir =
-        hscaffoldFromDirectoryWith' True p
+    fromDir = hscaffoldFromDirectoryWith' True p
     classify fp = do
         let fp' = root </> fp
         isfl <- doesFileExist fp'
         isdir <- doesDirectoryExist fp'
         if isfl
             then fromFile fp' (if isRecur then fp' else fp)
-            else if isdir
-            then fromDir fp'
-            else return []
+            else if isdir then fromDir fp' else return []

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
-module HscaffoldSpec
-  where
+
+module HscaffoldSpec where
 
 import           Control.Exception
 import           Control.Monad
@@ -61,78 +61,86 @@ spec = do
                     file "other/stuff-bang.hs" "stuff here"
                     directory "other" $ do
                         file "other-stuff-bang.hs" "even more stuff here"
-            in h `shouldBe` Text.stripEnd
-               (Text.unlines [ "{-# START_FILE ./stuff-bang.hs #-}"
-                             , "stuff here"
-                             , "{-# START_FILE ./other/stuff-bang.hs #-}"
-                             , "stuff here"
-                             , "{-# START_FILE ./other/other-stuff-bang.hs #-}"
-                             , "even more stuff here"
-                             ])
+            in
+                h `shouldBe`
+                    Text.stripEnd (Text.unlines [ "{-# START_FILE ./stuff-bang.hs #-}"
+                                                , "stuff here"
+                                                , "{-# START_FILE ./other/stuff-bang.hs #-}"
+                                                , "stuff here"
+                                                , "{-# START_FILE ./other/other-stuff-bang.hs #-}"
+                                                , "even more stuff here"
+                                                ])
 
     describe "fromHsfiles" $ do
         it "works without surprises" $
-            let h = (init
-                     (unlines
-                         [ "{-# START_FILE ./stuff-bang.hs #-}"
-                         , "stuff here"
-                         , "{-# START_FILE ./other/stuff-bang.hs #-}"
-                         , "stuff here"
-                         , "{-# START_FILE ./other/other-stuff-bang.hs #-}"
-                         , "even more stuff here"
-                         ]))
-            in (fromHsfiles h :: ScaffoldActionV) `shouldBe`
-               [ File "stuff-bang.hs" "stuff here"
-               , File "other/stuff-bang.hs" "stuff here"
-               , File "other/other-stuff-bang.hs" "even more stuff here"
-               ]
+            let h = (init (unlines [ "{-# START_FILE ./stuff-bang.hs #-}"
+                                   , "stuff here"
+                                   , "{-# START_FILE ./other/stuff-bang.hs #-}"
+                                   , "stuff here"
+                                   , "{-# START_FILE ./other/other-stuff-bang.hs #-}"
+                                   , "even more stuff here"
+                                   ]))
+            in
+                (fromHsfiles h :: ScaffoldActionV) `shouldBe`
+                    [ File "stuff-bang.hs" "stuff here"
+                    , File "other/stuff-bang.hs" "stuff here"
+                    , File "other/other-stuff-bang.hs" "even more stuff here"
+                    ]
 
         it "works without surprises" $
-            let h = (init
-                     (unlines
-                         [ "{-# START_FILE ./stuff-bang.hs #-}"
-                         , "stuff here"
-                         , "multiline"
-                         , " ya"
-                         , "{-# START_FILE ./other/stuff-bang.hs #-}"
-                         , "stuff here"
-                         , ""
-                         , "{-# START_FILE ./other/other-stuff-bang.hs #-}      "
-                         , "even more stuff here"
-                         , "  here too"
-                         ]))
-            in (fromHsfiles h :: ScaffoldActionV) `shouldBe`
-               [ File "stuff-bang.hs" "stuff here\nmultiline\n ya"
-               , File "other/stuff-bang.hs" "stuff here"
-               , File "other/other-stuff-bang.hs" "even more stuff here\n  here too"
-               ]
+            let h = (init (unlines [ "{-# START_FILE ./stuff-bang.hs #-}"
+                                   , "stuff here"
+                                   , "multiline"
+                                   , " ya"
+                                   , "{-# START_FILE ./other/stuff-bang.hs #-}"
+                                   , "stuff here"
+                                   , ""
+                                   , "{-# START_FILE ./other/other-stuff-bang.hs #-}      "
+                                   , "even more stuff here"
+                                   , "  here too"
+                                   ]))
+            in
+                (fromHsfiles h :: ScaffoldActionV) `shouldBe`
+                    [ File "stuff-bang.hs" "stuff here\nmultiline\n ya"
+                    , File "other/stuff-bang.hs" "stuff here"
+                    , File "other/other-stuff-bang.hs"
+                           "even more stuff here\n  here too"
+                    ]
 
     describe "hscaffoldToHaskell" $ do
         it "works without surprises" $
-            let h = hscaffoldToHaskell $ execWriter $ do
-                    file "stuff-bang.hs" "stuff here"
-                    file "other/stuff-bang.hs" "stuff here"
-                    directory "other" $ do
-                        file "other-stuff-bang.hs" "even more stuff here"
-            in h `shouldBe` Text.stripEnd
-               (Text.unlines [ "file \"stuff-bang.hs\" \"stuff here\""
-                             , "file \"other/stuff-bang.hs\" \"stuff here\""
-                             , "directory \"other\" $ do"
-                             , "    file \"other-stuff-bang.hs\" \"even more stuff here\""
-                             ])
+            let h = hscaffoldToHaskell $
+                    execWriter $ do
+                        file "stuff-bang.hs" "stuff here"
+                        file "other/stuff-bang.hs" "stuff here"
+                        directory "other" $ do
+                            file "other-stuff-bang.hs" "even more stuff here"
+            in
+                h `shouldBe`
+                    Text.stripEnd (Text.unlines [ "file \"stuff-bang.hs\" \"stuff here\""
+                                                , "file \"other/stuff-bang.hs\" \"stuff here\""
+                                                , "directory \"other\" $ do"
+                                                , "    file \"other-stuff-bang.hs\" \"even more stuff here\""
+                                                ])
 
     describe "hscaffoldFromDirectory" $ do
         it "works without surprises" $ do
             h <- hscaffoldFromDirectory "./src" :: IO (ScaffoldActionV)
-            let ms = mapMaybe (\x -> case x of File fp _ -> Just fp; _ -> Nothing) h
-            ms `shouldContain` ["Hscaffold.hs"]
+            let ms = mapMaybe (\x -> case x of
+                                   File fp _ -> Just fp
+                                   _ -> Nothing)
+                              h
+            ms `shouldContain` [ "Hscaffold.hs" ]
 
         it "ignores git" $ do
             h <- hscaffoldFromDirectory "." :: IO (ScaffoldActionV)
-            let ms = mapMaybe (\x -> case x of File fp _ -> Just fp; _ -> Nothing) h
-            ms `shouldNotContain` [".git/index"]
-            ms `shouldContain` ["README.md"]
-            ms `shouldContain` ["test/Spec.hs"]
+            let ms = mapMaybe (\x -> case x of
+                                   File fp _ -> Just fp
+                                   _ -> Nothing)
+                              h
+            ms `shouldNotContain` [ ".git/index" ]
+            ms `shouldContain` [ "README.md" ]
+            ms `shouldContain` [ "test/Spec.hs" ]
 
     describe "the runner" $
         describe "runAction" $ do

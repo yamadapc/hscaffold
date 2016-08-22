@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
-module Hscaffold.Interpreter.IO
-  where
+
+module Hscaffold.Interpreter.IO where
 
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class
@@ -37,7 +37,8 @@ runHscaffoldIO = runHscaffold
 
 -- | Run a single scaffolding action on the IO monad with no extensions
 runAction :: FilePath -> ScaffoldActionType e -> IO ()
-runAction _ (ScaffoldActionTypeExtension _) = return ()
+runAction _ (ScaffoldActionTypeExtension _) =
+    return ()
 runAction root (SetPermissions perms fp) =
     setPermissions (mkActionPath root fp) perms
 runAction root (Link fp1 fp2) =
@@ -52,7 +53,10 @@ runAction root (Copy fp1 fp2) = do
         fp2' = mkActionPath root fp2
     copyFile fp1' fp2'
 
-withTemporaryHscaffold :: (MonadMask m, MonadIO m) => ScaffoldMonadT m a -> m b -> m b
+withTemporaryHscaffold :: (MonadMask m, MonadIO m)
+                       => ScaffoldMonadT m a
+                       -> m b
+                       -> m b
 withTemporaryHscaffold =
     withTemporaryHscaffold' "hscaffold"
 
@@ -68,7 +72,9 @@ withTemporaryHscaffold' name scaffold action =
             action
 
 withTemporaryHscaffoldIO :: ScaffoldMonadIO a -> IO b -> IO b
-withTemporaryHscaffoldIO = withTemporaryHscaffold
+withTemporaryHscaffoldIO =
+    withTemporaryHscaffold
 
 withTemporaryHscaffoldIO' :: String -> ScaffoldMonadIO a -> IO b -> IO b
-withTemporaryHscaffoldIO' = withTemporaryHscaffold'
+withTemporaryHscaffoldIO' =
+    withTemporaryHscaffold'

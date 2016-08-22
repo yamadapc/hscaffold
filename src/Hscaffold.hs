@@ -5,69 +5,60 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
+
 module Hscaffold
-    (
-    -- * Running Hscaffold
+    ( -- * Running Hscaffold
       runHscaffold
-    -- * Convert Hscaffold to HSFILES (@stack templates@)
+      -- * Convert Hscaffold to HSFILES (@stack templates@)
     , toHsfiles
     , writeToHsfiles
-    -- * Convert HSFILES to Hscaffold
+      -- * Convert HSFILES to Hscaffold
     , fromHsfiles
     , fromHsfilesW
     , readHsfiles
-
-    -- * Convert a directory to Hscaffold
+      -- * Convert a directory to Hscaffold
     , hscaffoldFromDirectory
-    -- * Compile Hscaffold to Haskell code
+      -- * Compile Hscaffold to Haskell code
     , hscaffoldToHaskell
-
-    -- ** Finer grained runners
+      -- ** Finer grained runners
     , runAction
     , runWriter
     , runWriterT
-
-    -- * EDSL Combinators
+      -- * EDSL Combinators
     , directory
     , file
     , link
     , copy
     , touch
-
-    -- ** Setting permissions
+      -- ** Setting permissions
     , permissions
     , fileWith
     , directoryWith
     , copyWith
     , touchWith
     , Permissions(..)
-
-    -- * Types
+      -- * Types
     , ScaffoldMonadT
     , ScaffoldMonadIO
     , ScaffoldActionType(..)
     , ScaffoldAction
     , ScaffoldActionV
     , ScaffoldMonadET
-
-    -- * Utilities
+      -- * Utilities
     , withTemporaryHscaffold
     , withTemporaryHscaffold'
     , withTemporaryHscaffoldIO
     , withTemporaryHscaffoldIO'
-
-    -- * Helpers
+      -- * Helpers
     , runHscaffoldIO
     , mkActionPath
-
-    -- * Re-exports
+      -- * Re-exports
     , Text
     , module Control.Monad.IO.Class
     , module Control.Monad.Writer
     , module System.Directory
     , module System.FilePath
-    )
-  where
+    ) where
 
 import           Control.Monad.IO.Class
 import           Control.Monad.Writer

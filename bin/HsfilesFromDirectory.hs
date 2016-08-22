@@ -6,7 +6,7 @@ main :: IO ()
 main = do
     as <- getArgs
     case as of
-        (fp:_) -> go fp
+        (fp : _) -> go fp
         [] -> error "Usage: hsfiles-from-directory <DIRECTORY>"
   where
     go fp = do

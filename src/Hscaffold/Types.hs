@@ -1,5 +1,4 @@
-module Hscaffold.Types
-    where
+module Hscaffold.Types where
 
 import           Control.Monad.Writer
 import           Data.Text            (Text)
@@ -22,11 +21,11 @@ type ScaffoldActionV = ScaffoldAction ()
 
 -- | Type of actions scaffolding can make, 'ScaffoldActionTypeExtension' is open
 -- for extension through other data-types
-data ScaffoldActionType e
-    = File FilePath Text
+data ScaffoldActionType e =
+      File FilePath Text
     | Link FilePath FilePath
     | Directory FilePath (ScaffoldAction e)
     | SetPermissions Permissions FilePath
     | Copy FilePath FilePath
     | ScaffoldActionTypeExtension e
-  deriving(Show, Eq, Ord)
+    deriving (Show, Eq, Ord)
