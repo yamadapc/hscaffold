@@ -90,6 +90,9 @@ withTemporaryHscaffoldIO :: ScaffoldMonadIO a -> (FilePath -> IO b) -> IO b
 withTemporaryHscaffoldIO =
     withTemporaryHscaffold
 
-withTemporaryHscaffoldIO' :: String -> ScaffoldMonadIO a -> (FilePath -> IO b) -> IO b
+withTemporaryHscaffoldIO' :: String
+                          -> ScaffoldMonadIO a
+                          -> (FilePath -> IO b)
+                          -> IO b
 withTemporaryHscaffoldIO' =
     withTemporaryHscaffold'
