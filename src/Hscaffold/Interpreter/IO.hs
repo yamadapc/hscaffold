@@ -7,6 +7,7 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Writer
 import qualified Data.Text.IO                 as Text
 import           System.Directory
+import           System.FilePath
 import           System.IO.Temp
 -- TODO - Disable this on Windows
 import           System.Posix.Files
@@ -43,8 +44,10 @@ runAction root (SetPermissions perms fp) =
     setPermissions (mkActionPath root fp) perms
 runAction root (Link fp1 fp2) =
     createSymbolicLink (mkActionPath root fp1) (mkActionPath root fp2)
-runAction root (File fp txt) =
-    Text.writeFile (mkActionPath root fp) txt
+runAction root (File fp txt) = do
+    let fp' = mkActionPath root fp
+    createDirectoryIfMissing True (takeDirectory fp')
+    Text.writeFile fp' txt
 runAction root (Directory fp nested) = do
     createDirectoryIfMissing True (mkActionPath root fp)
     mapM_ (runAction (mkActionPath root fp)) nested
