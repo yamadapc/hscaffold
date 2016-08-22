@@ -50,6 +50,12 @@ module Hscaffold
     , ScaffoldActionV
     , ScaffoldMonadET
 
+    -- * Utilities
+    , withTemporaryHscaffold
+    , withTemporaryHscaffold'
+    , withTemporaryHscaffoldIO
+    , withTemporaryHscaffoldIO'
+
     -- * Helpers
     , runHscaffoldIO
     , mkActionPath

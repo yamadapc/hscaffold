@@ -1,16 +1,18 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Hscaffold.Interpreter.IO
   where
 
+import           Control.Monad.Catch
 import           Control.Monad.IO.Class
 import           Control.Monad.Writer
 import qualified Data.Text.IO                 as Text
 import           System.Directory
 -- TODO - Disable this on Windows
+import           System.IO.Temp
 import           System.Posix.Files
 
-import           Hscaffold.Types
-
 import           Hscaffold.Interpreter.Common
+import           Hscaffold.Types
 
 -- | Run the scaffolding writer on the IO monad with no extensions
 --
@@ -50,3 +52,23 @@ runAction root (Copy fp1 fp2) = do
         fp2' = mkActionPath root fp2
     copyFile fp1' fp2'
 
+withTemporaryHscaffold :: (MonadMask m, MonadIO m) => ScaffoldMonadT m a -> m b -> m b
+withTemporaryHscaffold =
+    withTemporaryHscaffold' "hscaffold"
+
+withTemporaryHscaffold' :: (MonadMask m, MonadIO m)
+                        => String
+                        -> ScaffoldMonadT m a
+                        -> m b
+                        -> m b
+withTemporaryHscaffold' name scaffold action =
+    withSystemTempDirectory name $
+        \tmp -> do
+            runHscaffold tmp scaffold
+            action
+
+withTemporaryHscaffoldIO :: ScaffoldMonadIO a -> IO b -> IO b
+withTemporaryHscaffoldIO = withTemporaryHscaffold
+
+withTemporaryHscaffoldIO' :: String -> ScaffoldMonadIO a -> IO b -> IO b
+withTemporaryHscaffoldIO' = withTemporaryHscaffold'

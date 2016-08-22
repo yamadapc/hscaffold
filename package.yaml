@@ -23,6 +23,8 @@ dependencies:
 - filepath
 - unix
 - regex-compat
+- temporary
+- exceptions
 
 library:
   source-dirs: src
@@ -42,4 +44,3 @@ tests:
     - hspec
     - hscaffold
     - QuickCheck
-    - temporary

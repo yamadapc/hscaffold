@@ -34,6 +34,8 @@ library
     , filepath
     , unix
     , regex-compat
+    , temporary
+    , exceptions
   exposed-modules:
       Hscaffold
       Hscaffold.EDSL
@@ -61,6 +63,8 @@ executable hsfiles-from-directory
     , filepath
     , unix
     , regex-compat
+    , temporary
+    , exceptions
     , hscaffold
   default-language: Haskell2010
 
@@ -78,10 +82,11 @@ test-suite hspec
     , filepath
     , unix
     , regex-compat
+    , temporary
+    , exceptions
     , hspec
     , hscaffold
     , QuickCheck
-    , temporary
   other-modules:
       HscaffoldSpec
       SanitySpec
