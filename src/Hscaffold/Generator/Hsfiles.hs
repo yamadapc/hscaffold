@@ -14,9 +14,7 @@ import           Hscaffold.Types
 
 -- | Converts hsfiles to hscaffold actions
 fromHsfiles :: String -> ScaffoldAction e
-fromHsfiles h = let (_, r) = foldr helper ("", []) matches
-                in
-                    r
+fromHsfiles h = snd $ foldr helper ("", []) matches
   where
     helper (Just (fp : _), _) (lacc, current) =
         ("", File (normalise fp) lacc : current)
